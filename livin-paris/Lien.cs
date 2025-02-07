@@ -6,11 +6,7 @@ using System.Threading.Tasks;
 
 namespace livin_paris
 {
-    internal class Program
+    internal class Lien
     {
-        static void Main(string[] args)
-        {
-        }
     }
 }
-s
