@@ -4,7 +4,7 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{C0EBF6FF-09B5-445E-A161-2BCFE980021B}</ProjectGuid>
+    <ProjectGuid>{3EE2E8DF-0CF0-4CA7-9F4D-B9D6C5CFA4DC}</ProjectGuid>
     <OutputType>Exe</OutputType>
     <RootNamespace>livin_paris</RootNamespace>
     <AssemblyName>livin-paris</AssemblyName>
@@ -43,12 +43,10 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="..\..\..\..\Documents\Projet liv%27in paris\livin_paris\Program.cs">
-      <Link>Program.cs</Link>
-    </Compile>
     <Compile Include="Graphe.cs" />
     <Compile Include="Lien.cs" />
     <Compile Include="Noeud.cs" />
+    <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
