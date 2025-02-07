@@ -10,6 +10,7 @@ namespace livin_paris
     {
         static void Main(string[] args)
         {
+            //
         }
     }
 }
