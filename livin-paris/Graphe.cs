@@ -18,6 +18,9 @@ namespace livin_paris
             this.listeAdjacence = new Dictionary<int, List<Noeud>>();
             this.nbNoeuds = 0;
             ChargerGraphe(fichier);
+
+            DFS(new Noeud(1));
+            BFS(new Noeud(1));
         }
         private void ChargerGraphe(string fichier)
         {
@@ -40,63 +43,50 @@ namespace livin_paris
                     }
                     if (noeudsLigne.Length == 2)
                     {
+                        
                         Noeud n1 = new Noeud(int.Parse(noeudsLigne[0]));
                         Noeud n2 = new Noeud(int.Parse(noeudsLigne[1]));
-                        /*bool test_n1 = false;
-                        bool test_n2 = false;
-                        for (int i = 0; i < listeAdjacence.Count; i++)
+
+                        bool verif = true;
+                        foreach (Noeud noeud in this.listeAdjacence[n1.Id])
+                        {
+                            if (noeud.isEqual(n2))
+                            {
+                                verif= false;
+                            }
+                        }
+
+                        if (verif == true)
+                        {
+                            this.listeAdjacence[n1.Id].Add(n2);
+                        }
+
+                        verif = true;
+                        foreach (Noeud noeud in this.listeAdjacence[n2.Id])
                         {
                             if (noeud.isEqual(n1))
                             {
-                                test_n1 = true;
-                            }
-                            if (noeud.isEqual(n2))
-                            {
-                                test_n2 = true;
+                                verif = false;
                             }
                         }
-
-                        if (!test_n1)
+                        if (verif == true)
                         {
-                            this.listeAdjacence.Add(n1, new List<Noeud>());
-                            this.nbNoeuds++;
+                            this.listeAdjacence[n2.Id].Add(n1);
                         }
-
-                        if (!test_n2)
-                        {
-                            this.listeAdjacence.Add(n2, new List<Noeud>());
-                            this.nbNoeuds++;
-                        }
-                        */
-                        /*if (!this.listeAdjacence.ContainsKey(n1))
-                        {
-                            this.listeAdjacence.Add(n1, new List<Noeud>());
-                            this.nbNoeuds++;
-                        }
-
-                        if (!this.listeAdjacence.ContainsKey(n2))
-                        {
-                            this.listeAdjacence.Add(n2, new List<Noeud>());
-                            this.nbNoeuds++;
-                        }*/
-
-                        /*
-                        if (!this.listeAdjacence[n1].Contains(n2))
-                        {
-                            this.listeAdjacence[n1].Add(n2);
-                            Console.WriteLine(ligne + " : " + n2.Id);
-                        }
-
-
-                        if (!this.listeAdjacence[n2].Contains(n1))
-                        {
-                            this.listeAdjacence[n2].Add(n1);
-                            Console.WriteLine(ligne + " : " + n1.Id);
-                        }*/
 
                         Lien l = new Lien(n1, n2);
                     }
                 }
+            }
+
+            for(int i = 1; i <= this.nbNoeuds; i++)
+            {
+                Console.Write("- " + i + " : ");
+                foreach(var n in this.listeAdjacence[i])
+                {
+                    Console.Write(n.Id+", ");
+                }
+                Console.WriteLine();
             }
 
             /*} catch (Exception ex) {
@@ -130,6 +120,7 @@ namespace livin_paris
 
         public void DFS(Noeud depart) //Parcours en profondeur d'abord
         {
+            Console.Write("DFS : ");
             int departIndex = depart.Id;
             List<int> dejaVisite = new List<int>();
             Stack<int> pile = new Stack<int>();
@@ -143,16 +134,59 @@ namespace livin_paris
                     dejaVisite.Add(noeudActuel);
                     Console.Write(noeudActuel + " ");
 
-                    foreach (var voisin in ListeAdjacence[noeudActuel])
+                    foreach (Noeud voisin in listeAdjacence[noeudActuel])
                     {
-                        if (!dejaVisite.Contains(voisin))
+                        if (!dejaVisite.Contains(voisin.Id))
                         {
-                            pile.Push(voisin);
+                            pile.Push(voisin.Id);
                         }
                     }
                 }
             }
             Console.WriteLine();
         }
+
+        public void BFS(Noeud depart) //Parcours en largeur d'abord
+        {
+            //List <Noeud> noeudsParcourus = new List<Noeud>();
+
+            Console.Write("BFS : ");
+            int departIndex = depart.Id;
+            List<int> dejaVisite = new List<int>();
+            Queue<int> file = new Queue<int>();
+            file.Enqueue(departIndex);
+            dejaVisite.Add(departIndex);
+
+            while (file.Count > 0)
+            {
+                int noeudActuel = file.Dequeue();
+                Console.Write(noeudActuel + " ");
+
+                foreach (Noeud voisin in listeAdjacence[noeudActuel])
+                {
+                    if (!dejaVisite.Contains(voisin.Id))
+                    {
+                        dejaVisite.Add(voisin.Id);
+                        file.Enqueue(voisin.Id);
+                    }
+                }
+            }
+            Console.WriteLine();
+        }
+
+        /*public bool EstConnexe()
+        {
+            bool estConnexe = true;
+
+            for (int i = 1; i<this.nbNoeuds; i++)
+            {
+                noeudsParcourus = new DFS(new Noeud(i));
+                if ()
+            }
+            
+
+
+            return estConnexe;
+        }*/
     }
 }
