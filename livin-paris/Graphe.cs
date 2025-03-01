@@ -41,7 +41,7 @@ namespace livin_paris
                     {  
                         Noeud n1 = new Noeud(int.Parse(noeudsLigne[0]));
                         Noeud n2 = new Noeud(int.Parse(noeudsLigne[1]));
-                        /*bool test_n1 = false;
+                        bool test_n1 = false;
                         bool test_n2 = false;
                         for (int i = 0, i < listeAdjacence.Count, i++)
                         {
@@ -65,7 +65,7 @@ namespace livin_paris
                         {
                             this.listeAdjacence.Add(n2, new List<Noeud>());
                             this.nbNoeuds++;
-                        }*/
+                        }
 
                         /*if (!this.listeAdjacence.ContainsKey(n1))
                         {
