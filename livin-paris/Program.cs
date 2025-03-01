@@ -1,14 +1,16 @@
 ﻿using System;
 using System.IO;
 using System.Collections.Generic;
+using livin_paris;
 
 class Program
 {
     static void Main()
     {
-        string filePath = "../../../soc-karate.mtx"; // Mets ici le chemin correct
-
-        if (!File.Exists(filePath))
+        //string filePath = "../../../soc-karate.mtx";
+        string filePath = "C:\\Users\\Nils\\Documents\\Projet liv\'in paris\\Association-soc-karate\\soc-karate.mtx";
+        new Graphe(filePath);
+        /*if (!File.Exists(filePath))
         {
             Console.WriteLine("Fichier introuvable.");
             return;
@@ -71,6 +73,6 @@ class Program
         catch (Exception ex)
         {
             Console.WriteLine("Erreur lors de la lecture du fichier : " + ex.Message);
-        }
+        }*/
     }
 }

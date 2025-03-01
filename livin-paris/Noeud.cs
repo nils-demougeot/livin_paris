@@ -13,6 +13,11 @@ namespace livin_paris
         public Noeud(int id) {
             this.id = id;
         }
+        
+        public int Id
+        {
+            get { return id; }
+        }
 
         public bool isEqual(Noeud n2)
         {
@@ -23,5 +28,6 @@ namespace livin_paris
 
             return false; 
         }
+
     }
 }
