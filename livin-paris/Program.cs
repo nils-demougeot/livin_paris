@@ -7,8 +7,8 @@ class Program
 {
     static void Main()
     {
-        //string filePath = "../../../soc-karate.mtx";
-        string filePath = "C:\\Users\\Nils\\Documents\\Projet liv\'in paris\\Association-soc-karate\\soc-karate.mtx";
+        string filePath = "../../../soc-karate.mtx";
+        //string filePath = "C:\\Users\\Nils\\Documents\\Projet liv\'in paris\\Association-soc-karate\\soc-karate.mtx";
         new Graphe(filePath);
         /*if (!File.Exists(filePath))
         {
