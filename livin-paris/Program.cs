@@ -1,58 +1,76 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Globalization;
+using System.Collections.Generic;
 
-namespace livin_paris
+class Program
 {
-    internal class Program
+    static void Main()
     {
+        string filePath = "../../../soc-karate.mtx"; // Mets ici le chemin correct
 
-        public static Dictionary<(int, int), double> LoadMatrix(string filePath, out int rows, out int cols)
+        if (!File.Exists(filePath))
         {
-            var matrix = new Dictionary<(int, int), double>();
-            rows = cols = 0;
-            bool headerProcessed = false;
-
-            foreach (var line in File.ReadLines(filePath))
-            {
-                // Ignorer les commentaires (%)
-                if (line.StartsWith("%"))
-                    continue;
-
-                var parts = line.Split(new[] { ' ', '\t' }, StringSplitOptions.RemoveEmptyEntries);
-
-                // Première ligne sans commentaire = dimensions de la matrice
-                if (!headerProcessed)
-                {
-                    rows = int.Parse(parts[0]);
-                    cols = int.Parse(parts[1]);
-                    headerProcessed = true;
-                }
-                else
-                {
-                    int row = int.Parse(parts[0]) - 1;  // Indexation commence à 0
-                    int col = int.Parse(parts[1]) - 1;
-                    double value = double.Parse(parts[2], CultureInfo.InvariantCulture);
-
-                    matrix[(row, col)] = value;
-                }
-            }
-
-            return matrix;
+            Console.WriteLine("Fichier introuvable.");
+            return;
         }
-        static void Main(string[] args)
+
+        try
         {
-            string filePath = "../../../soc-karate.mtx"; // Remplace avec ton chemin de fichier
+            List<(int, int)> edges = new List<(int, int)>();
+            int numRows = 0, numCols = 0, numEdges = 0;
+            bool dimensionsRead = false;
 
-            var matrix = LoadMatrix(filePath, out int rows, out int cols);
-
-            Console.WriteLine($"Matrice {rows}x{cols} chargée avec {matrix.Count} valeurs non nulles.");
-
-            foreach (var entry in matrix)
+            using (StreamReader reader = new StreamReader(filePath))
             {
-                Console.WriteLine($"({entry.Key.Item1}, {entry.Key.Item2}) = {entry.Value}");
+                string line;
+                while ((line = reader.ReadLine()) != null)
+                {
+                    line = line.Trim();
+
+                    // Ignorer les lignes de commentaire
+                    if (line.StartsWith("%") || line.Length == 0)
+                        continue;
+
+                    // Lire les dimensions de la matrice (nombre de nœuds + arêtes)
+                    if (!dimensionsRead)
+                    {
+                        string[] parts = line.Split(new char[] { ' ', '\t' }, StringSplitOptions.RemoveEmptyEntries);
+                        if (parts.Length == 3)
+                        {
+                            numRows = int.Parse(parts[0]);
+                            numCols = int.Parse(parts[1]);
+                            numEdges = int.Parse(parts[2]);
+                            dimensionsRead = true;
+                        }
+                        continue;
+                    }
+
+                    // Lire les connexions entre les nœuds (row, col)
+                    string[] data = line.Split(new char[] { ' ', '\t' }, StringSplitOptions.RemoveEmptyEntries);
+                    if (data.Length == 2)
+                    {
+                        int row = int.Parse(data[0]);
+                        int col = int.Parse(data[1]);
+
+                        edges.Add((row, col));
+                        // Comme la matrice est symétrique, ajouter aussi (col, row)
+                        edges.Add((col, row));
+                    }
+                }
             }
+
+            Console.WriteLine($"Graphe chargé : {numRows} sommets, {numEdges} arêtes");
+            Console.WriteLine("Exemples de connexions :");
+            for (int i = 0; i < Math.Min(edges.Count, 10); i++)
+            {
+                Console.WriteLine($"{edges[i].Item1} <-> {edges[i].Item2}");
+            }
+
+            // Ici, tu peux utiliser la liste "edges" pour construire un graphe
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine("Erreur lors de la lecture du fichier : " + ex.Message);
         }
     }
 }

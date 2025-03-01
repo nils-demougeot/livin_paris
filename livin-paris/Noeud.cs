@@ -8,5 +8,20 @@ namespace livin_paris
 {
     internal class Noeud
     {
+        private int id;
+
+        public Noeud(int id) {
+            this.id = id;
+        }
+
+        public bool isEqual(Noeud n2)
+        {
+            if (this.id == n2.id)
+            {
+                return true;
+            }
+
+            return false; 
+        }
     }
 }
