@@ -19,8 +19,24 @@ namespace livin_paris
             this.nbNoeuds = 0;
             ChargerGraphe(fichier);
 
-            DFS(new Noeud(1));
-            BFS(new Noeud(1));
+            List<Noeud> dfs = DFS(new Noeud(1));
+            Console.Write("DFS : ");
+            for (int i = 0; i < dfs.Count; i++)
+            {
+                Console.Write(dfs[i].Id+", ");
+            }
+            Console.WriteLine();
+
+            List<Noeud> bfs = BFS(new Noeud(1));
+            Console.Write("BFS : ");
+            for (int i = 0; i < bfs.Count; i++)
+            {
+                Console.Write(bfs[i].Id + ", ");
+            }
+            Console.WriteLine();
+
+
+            Console.WriteLine(this.EstConnexe());
         }
         private void ChargerGraphe(string fichier)
         {
@@ -118,75 +134,88 @@ namespace livin_paris
             }
         }
 
-        public void DFS(Noeud depart) //Parcours en profondeur d'abord
+        public List<Noeud> DFS(Noeud depart) //Parcours en profondeur d'abord
         {
-            Console.Write("DFS : ");
-            int departIndex = depart.Id;
-            List<int> dejaVisite = new List<int>();
-            Stack<int> pile = new Stack<int>();
-            pile.Push(departIndex);
+            List<Noeud> noeudsParcourus = new List<Noeud>();
+            Stack<Noeud> pile = new Stack<Noeud>();
+            pile.Push(depart);
 
             while (pile.Count > 0)
             {
-                int noeudActuel = pile.Pop();
-                if (!dejaVisite.Contains(noeudActuel))
+                Noeud noeudActuel = pile.Pop();
+                bool dejaVisite = false;
+                for (int i = 0; i < noeudsParcourus.Count; i++)
                 {
-                    dejaVisite.Add(noeudActuel);
-                    Console.Write(noeudActuel + " ");
-
-                    foreach (Noeud voisin in listeAdjacence[noeudActuel])
+                    if (noeudsParcourus[i].isEqual(noeudActuel))
                     {
-                        if (!dejaVisite.Contains(voisin.Id))
+                        dejaVisite = true;
+                    }
+                }
+                if (dejaVisite == false)
+                {
+                    noeudsParcourus.Add(noeudActuel);
+
+                    foreach (Noeud voisin in listeAdjacence[noeudActuel.Id])
+                    {
+                        bool dejaVisiteVoisin = false;
+                        for (int j = 0; j < noeudsParcourus.Count; j++)
                         {
-                            pile.Push(voisin.Id);
+                            if (noeudsParcourus[j].isEqual(voisin))
+                            {
+                                dejaVisiteVoisin = true;
+                            }
+                        }
+                        if (dejaVisiteVoisin == false)
+                        {
+                            pile.Push(voisin);
                         }
                     }
                 }
             }
-            Console.WriteLine();
+            return noeudsParcourus;
         }
 
-        public void BFS(Noeud depart) //Parcours en largeur d'abord
+        public List<Noeud> BFS(Noeud depart) //Parcours en largeur d'abord
         {
-            //List <Noeud> noeudsParcourus = new List<Noeud>();
-
-            Console.Write("BFS : ");
-            int departIndex = depart.Id;
-            List<int> dejaVisite = new List<int>();
-            Queue<int> file = new Queue<int>();
-            file.Enqueue(departIndex);
-            dejaVisite.Add(departIndex);
+            List <Noeud> noeudsParcourus = new List<Noeud>();
+            Queue<Noeud> file = new Queue<Noeud>();
+            file.Enqueue(depart);
+            noeudsParcourus.Add(depart);
 
             while (file.Count > 0)
             {
-                int noeudActuel = file.Dequeue();
-                Console.Write(noeudActuel + " ");
+                Noeud noeudActuel = file.Dequeue();
 
-                foreach (Noeud voisin in listeAdjacence[noeudActuel])
+                foreach (Noeud voisin in listeAdjacence[noeudActuel.Id])
                 {
-                    if (!dejaVisite.Contains(voisin.Id))
+                    bool dejaVisite = false;
+                    for (int i = 0; i < noeudsParcourus.Count; i++)
                     {
-                        dejaVisite.Add(voisin.Id);
-                        file.Enqueue(voisin.Id);
+                        if (noeudsParcourus[i].isEqual(voisin))
+                        {
+                            dejaVisite = true;
+                        }
+                    }
+                    if (dejaVisite == false)
+                    {
+                        noeudsParcourus.Add(voisin);
+                        file.Enqueue(voisin);
                     }
                 }
             }
-            Console.WriteLine();
+            return noeudsParcourus;
         }
 
-        /*public bool EstConnexe()
+        public bool EstConnexe()
         {
-            bool estConnexe = true;
+            List<Noeud> noeudsParcourus = DFS(new Noeud(1));
 
-            for (int i = 1; i<this.nbNoeuds; i++)
+            if (noeudsParcourus.Count == this.nbNoeuds)
             {
-                noeudsParcourus = new DFS(new Noeud(i));
-                if ()
+                return true;
             }
-            
 
-
-            return estConnexe;
-        }*/
+            return false;
+        }
     }
 }
