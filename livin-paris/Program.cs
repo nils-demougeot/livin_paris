@@ -9,8 +9,7 @@ class Program
     {
         string filePath = "../../../soc-karate.mtx";
         //string filePath = "C:\\Users\\Nils\\Documents\\Projet liv\'in paris\\Association-soc-karate\\soc-karate.mtx";
-        Graphe graphe = new Graphe(filePath);
-        //VisualiseurGraphe.AfficherGraphe(graphe);
+        new Graphe(filePath);
         /*if (!File.Exists(filePath))
         {
             Console.WriteLine("Fichier introuvable.");

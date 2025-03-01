@@ -4,27 +4,17 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-//using SkiaSharp;
-using System.Diagnostics;
-//using GrapheVisualizer;
 
 namespace livin_paris
 {
     internal class Graphe
     {
-        public List<Noeud> Noeuds_Graphe;
-        public List<Lien> Liens_Graphe;
         private Dictionary<int, List<Noeud>> listeAdjacence;
         private int[,] matriceAdjacence;
         private int nbNoeuds;
 
         public Graphe(string fichier)
         {
-            this.Noeuds_Graphe = new List<Noeud>();
-            this.Liens_Graphe = new List<Lien>();
-            this.nbNoeuds = 0;
-            ChargerGrapheBis(fichier);
-
             this.listeAdjacence = new Dictionary<int, List<Noeud>>();
             this.nbNoeuds = 0;
             ChargerGraphe(fichier);
@@ -43,55 +33,6 @@ namespace livin_paris
 
             this.ContientCicuits();
         }
-
-        public List<Noeud> GetNoeuds()
-        {
-            return Noeuds_Graphe;
-        }
-        public List<Lien> GetLiens()
-        {
-            return Liens_Graphe;
-        }
-
-        private void ChargerGrapheBis(string fichier)
-        {
-            try
-            {
-                string[] lignes = File.ReadAllLines(fichier);
-                foreach (string ligne in lignes)
-                {
-                    if (ligne[0] != '%')
-                    {
-                        string[] noeudsLigne = ligne.Split(' ');
-
-                        if (noeudsLigne.Length == 3)
-                        {
-                            this.nbNoeuds = int.Parse(noeudsLigne[0]);
-                        }
-                        if (noeudsLigne.Length == 2)
-                        {
-                            Noeud n1 = new Noeud(int.Parse(noeudsLigne[0]));
-                            Noeud n2 = new Noeud(int.Parse(noeudsLigne[1]));
-
-                            if (!Noeuds_Graphe.Any(n => n.Id == n1.Id))
-                            {
-                                Noeuds_Graphe.Add(n1);
-                            }
-                            if (!Noeuds_Graphe.Any(n => n.Id == n2.Id))
-                            {
-                                Noeuds_Graphe.Add(n2);
-                            }
-                            Liens_Graphe.Add(new Lien(n1, n2));
-                        }
-                    }
-                }
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine("erreur : " + ex.Message);
-            }
-        }
-
         private void ChargerGraphe(string fichier)
         {
             try
@@ -367,105 +308,3 @@ namespace livin_paris
         }
     }
 }
-
-/*namespace GrapheVisualizer
-{
-    public class VisualiseurGraphe
-    {
-        /// <summary>
-        /// Génère et sauvegarde une image représentant un graphe à partir d'une liste de nœuds et de liens.
-        /// </summary>
-        /// <param name="graphe">Instance du graphe contenant les nœuds et les liens</param>
-        /// <param name="cheminSauvegarde">Adresse où le fichier image sera sauvegardé</param>
-        /// <param name="largeurImage">Largeur en pixels de l'image</param>
-        /// <param name="hauteurImage">Hauteur en pixels de l'image</param>
-        public void CreerGraphe(Graphe graphe, string cheminSauvegarde, int largeurImage = 800, int hauteurImage = 600)
-        {
-            if (graphe.GetNoeuds().Count == 0)
-            {
-                throw new ArgumentException("Le graphe est vide.");
-            }
-
-            using var bitmap = new SKBitmap(largeurImage, hauteurImage);
-            using var canvas = new SKCanvas(bitmap);
-            canvas.Clear(SKColors.White);
-
-            Dictionary<int, (float X, float Y)> positions = CalculerPositions(graphe, largeurImage, hauteurImage);
-
-            // Dessiner les liens en premier
-            using var paintLien = new SKPaint
-            {
-                Color = SKColors.Black,
-                StrokeWidth = 2,
-                IsAntialias = true
-            };
-
-            foreach (var lien in graphe.GetLiens())
-            {
-                var pos1 = positions[lien.Noeud1.Id];
-                var pos2 = positions[lien.Noeud2.Id];
-                canvas.DrawLine(pos1.X, pos1.Y, pos2.X, pos2.Y, paintLien);
-            }
-
-            // Dessiner les nœuds par-dessus
-            using var paintNoeud = new SKPaint
-            {
-                Color = SKColors.Blue,
-                IsAntialias = true
-            };
-            using var paintTexte = new SKPaint
-            {
-                Color = SKColors.White,
-                TextSize = 20,
-                IsAntialias = true
-            };
-
-            foreach (var noeud in graphe.GetNoeuds())
-            {
-                var pos = positions[noeud.Id];
-                canvas.DrawCircle(pos.X, pos.Y, 25, paintNoeud);
-                canvas.DrawText(noeud.Id.ToString(), pos.X - 10, pos.Y + 5, paintTexte);
-            }
-
-            using var image = SKImage.FromBitmap(bitmap);
-            using var data = image.Encode(SKEncodedImageFormat.Png, 100);
-            using var stream = File.OpenWrite(cheminSauvegarde);
-            data.SaveTo(stream);
-
-            Console.WriteLine("Graphe sauvegardé à : " + Path.GetFullPath(cheminSauvegarde));
-        }
-
-        /// <summary>
-        /// Calcule les positions des nœuds pour une répartition circulaire dans l'image.
-        /// </summary>
-        private Dictionary<int, (float X, float Y)> CalculerPositions(Graphe graphe, int largeur, int hauteur)
-        {
-            Dictionary<int, (float, float)> positions = new Dictionary<int, (float, float)>();
-            int rayon = Math.Min(largeur, hauteur) / 3;
-            int centreX = largeur / 2;
-            int centreY = hauteur / 2;
-            int totalNoeuds = graphe.GetNoeuds().Count;
-
-            for (int i = 0; i < totalNoeuds; i++)
-            {
-                double angle = (2 * Math.PI * i) / totalNoeuds;
-                int id = graphe.GetNoeuds()[i].Id;
-                positions[id] = ((float)(centreX + rayon * Math.Cos(angle)), (float)(centreY + rayon * Math.Sin(angle)));
-            }
-
-            return positions;
-        }
-
-        /// <summary>
-        /// Affiche le graphe en ouvrant l'image après sa création.
-        /// </summary>
-        public static void AfficherGraphe(Graphe graphe)
-        {
-            string cheminImage = "Graphe.png";
-            VisualiseurGraphe visualiseur = new VisualiseurGraphe();
-            visualiseur.CreerGraphe(graphe, cheminImage);
-
-            Process.Start(new ProcessStartInfo(cheminImage) { UseShellExecute = true });
-        }
-    }
-}*/
