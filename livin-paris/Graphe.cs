@@ -4,11 +4,16 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using SkiaSharp;
+using System.Diagnostics;
+using GrapheVisualizer;
 
 namespace livin_paris
 {
     internal class Graphe
     {
+        public List<Noeud> Noeuds_Graphe;
+        public List<Lien> Liens_Graphe;
         private Dictionary<int, List<Noeud>> listeAdjacence;
         private int[,] matriceAdjacence;
         private int nbNoeuds;
