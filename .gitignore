@@ -1,3 +1,10 @@
 /.vs
 /livin-paris/.vs
 /livin-paris/obj
+/livin-paris/bin
+/livin-paris/packages
+/livin-paris/Properties
+/livin-paris/App.config
+/livin-paris/packages.config
+/livin-paris/livin-paris.csproj
+/livin-paris/livin-paris.sln
