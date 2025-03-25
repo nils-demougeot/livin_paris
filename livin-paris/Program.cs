@@ -16,7 +16,35 @@ class Program
         string connectionString = "Server=localhost;Database=film;User ID=root;Password=root;SslMode=none;";
         MySqlConnection conn = ConnexionSQL(connectionString);
 
-        Console.ReadLine();
+
+
+        Console.WriteLine("test starting ::");
+
+        //test requetes sql
+        string requete = "SELECT titre,annee FROM film WHERE pays = 'USA';";
+        MySqlCommand command1 = conn.CreateCommand();
+        command1.CommandText = requete;
+
+        MySqlDataReader reader = command1.ExecuteReader();
+
+        string[] valueString = new string[reader.FieldCount];
+
+        while (reader.Read())
+        {
+            string titre = (string)reader["titre"];
+            int annee = (int)reader["annee"];
+            Console.WriteLine(titre+ "  "+ annee);
+
+            for (int i = 0; i<reader.FieldCount; i++)
+            {
+                valueString[i] = reader.GetValue(i).ToString();
+                Console.Write(valueString[i] + " , ");
+            }
+            Console.WriteLine();
+        }
+
+        reader.Close();
+        command1.Dispose();
     }
 
 
@@ -36,4 +64,5 @@ class Program
         
         return conn;
     }
+
 }
